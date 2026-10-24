@@ -21,4 +21,4 @@ npm run serve
 
 For an offline build, use `npm run build -- --firmware-dir /path/to/release-assets`. Preview at `http://127.0.0.1:4173/`. Deployment uses `.github/workflows/web-flasher-pages.yml` and the GitHub Pages Actions publishing source.
 
-The firmware was physically flashed and tested using esptool CLI. Automated tests cover mocked transport operations and rejection paths. Browser UI has been checked; a complete hardware flash through this website remains to be tested. Keep a device backup and use a desktop browser supporting Web Serial, such as Chrome or Edge, over HTTPS or localhost.
+The firmware was physically flashed and tested using esptool CLI. Automated tests cover mocked transport operations and rejection paths. Browser UI has been checked. Keep a device backup and use a desktop browser supporting Web Serial, such as Chrome or Edge, over HTTPS or localhost.

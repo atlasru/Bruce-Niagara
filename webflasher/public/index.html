@@ -86,7 +86,7 @@
 
       <section class="notes" aria-label="Details">
         <details><summary data-i18n="compatTitle">Совместимость и сохранение данных</summary><div><p data-i18n="compatBody">Только Lilygo T-Embed CC1101 с ESP32-S3 и 16 МБ flash. Проверка чипа не определяет точную модель платы — её нужно подтвердить самостоятельно.</p><p data-i18n="dataBody">Обновление принимает только таблицу разделов Bruce 1.15 и пишет приложение с адреса 0x10000. Полный образ пишет также загрузчик, таблицу разделов и NVS, сбрасывая настройки. Сделай резервную копию до прошивки.</p></div></details>
-        <details><summary data-i18n="troubleTitle">Если подключение не получилось</summary><div><p data-i18n="troubleBody">Проверь режим загрузчика, USB-кабель и выбранный порт. Закрой другие программы, использующие COM-порт. При ошибке записи снова войди в загрузчик и повтори установку; успешной считается только запись с совпавшей контрольной суммой.</p><p data-i18n="browserLimit">Физическая прошивка через эту страницу ещё требует проверки на устройстве. При необходимости используй .bin и инструкцию из GitHub Releases.</p></div></details>
+        <details><summary data-i18n="troubleTitle">Если подключение не получилось</summary><div><p data-i18n="troubleBody">Проверь режим загрузчика, USB-кабель и выбранный порт. Закрой другие программы, использующие COM-порт. При ошибке записи снова войди в загрузчик и повтори установку; успешной считается только запись с совпавшей контрольной суммой.</p></div></details>
         <details id="log-details"><summary data-i18n="logTitle">Журнал подключения</summary><div><pre id="log" tabindex="0"></pre><button id="save-log" class="text-button" type="button" data-i18n="saveLog">Скачать журнал</button></div></details>
       </section>
     </main>
