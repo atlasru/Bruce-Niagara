@@ -1,4 +1,5 @@
 #include "display.h"
+#include "niagara_menu.h"
 #include "core/wifi/webInterface.h" // for server
 #include "core/wifi/wg.h"           //for isConnectedWireguard to print wireguard lock
 #include "mykeyboard.h"
@@ -502,6 +503,7 @@ int loopOptions(
     int devModeCounter = 0;
     static unsigned long _clock_bat_timer = millis();
     if (options.size() > MAX_MENU_SIZE) { menuSize = MAX_MENU_SIZE; }
+#ifndef BRUCE_NIAGARA_UI
     if (index > 0)
         tft.fillRoundRect(
             tftWidth * 0.10,
@@ -511,10 +513,19 @@ int loopOptions(
             5,
             bruceConfig.bgColor
         );
+#endif
     if (index >= options.size()) index = 0;
     bool firstRender = true;
+#ifdef BRUCE_NIAGARA_UI
+    unsigned long focusTs = millis();
+    unsigned long marqueeTs = 0;
+    int focusIndex = -1;
+    int previewIndex = -1;
+#endif
     static unsigned long menuOpenTs = 0; // timestamp when menu was first rendered
+#ifndef BRUCE_NIAGARA_UI
     drawMainBorder();
+#endif
     while (1) {
         // Check for shutdown before drawing menu to avoid drawing a black bar on the screen
         if (exit) break;
@@ -526,10 +537,24 @@ int loopOptions(
             }
             if (millis() - _clock_bat_timer > 30000) {
                 _clock_bat_timer = millis();
+#ifdef BRUCE_NIAGARA_UI
+                redraw = true;
+#else
                 drawStatusBar(); // update clock and battery status each 30s
+#endif
             }
         }
 
+#ifdef BRUCE_NIAGARA_UI
+        if (focusIndex != index) {
+            focusIndex = index;
+            focusTs = millis();
+        }
+        if (niagaraLabelOverflows(options[index].label) && millis() - marqueeTs >= 220) {
+            marqueeTs = millis();
+            redraw = true;
+        }
+#endif
         if (redraw) {
             menuOptionType = menuType; // updates menutype to the remote controller
             menuOptionLabel = subText;
@@ -537,6 +562,15 @@ int loopOptions(
             for (auto &opt : options) opt.hovered = false;
             options[index].hovered = true;
 
+#ifdef BRUCE_NIAGARA_UI
+            // Keep brightness/color/LED previews, but suppress their old menu artwork.
+            // Marquee repaints must not repeatedly apply hardware settings.
+            if (previewIndex != index && options[index].hover) {
+                options[index].hover(options[index].hoverPointer, false);
+            }
+            previewIndex = index;
+            drawNiagaraMenu(index, options, menuType, subText, millis() - focusTs);
+#else
             bool renderedByLambda = false;
             if (options[index].hover)
                 renderedByLambda = options[index].hover(options[index].hoverPointer, true);
@@ -553,6 +587,7 @@ int loopOptions(
                         firstRender
                     );
             }
+#endif
             if (firstRender) menuOpenTs = millis();
             firstRender = false;
             redraw = false;
@@ -563,10 +598,12 @@ int loopOptions(
         checkShortcutPress(); // shortctus to quickly start apps without navigating the menus
 #endif
 
+#ifndef BRUCE_NIAGARA_UI
         if (menuType == MENU_TYPE_REGULAR) {
             String txt = options[index].label;
             displayScrollingText(txt, coord);
         }
+#endif
 
         // Checks ESC Press first, to not exit after PrevPress is processed
         // PrevPress condition is a StickCPlus workaround, as it uses the same button for Prev and Esc
@@ -996,6 +1033,24 @@ void drawWireguardStatus(int x, int y) {
 #define MAX_ITEMS (int)(tftHeight - 20) / (LH * FM)
 Opt_Coord listFiles(int index, std::vector<FileList> fileList) {
     Opt_Coord coord;
+#ifdef BRUCE_NIAGARA_UI
+    std::vector<Option> entries;
+    entries.reserve(fileList.size());
+    for (const auto &file : fileList) {
+        entries.push_back({(file.folder ? String("/") : String("")) + file.filename, []() {}});
+    }
+    if (index < 0 || index >= static_cast<int>(entries.size())) return coord;
+    static int lastIndex = -1;
+    static String lastLabel;
+    static unsigned long focusTs = 0;
+    if (index != lastIndex || entries[index].label != lastLabel) {
+        lastIndex = index;
+        lastLabel = entries[index].label;
+        focusTs = millis();
+    }
+    drawNiagaraMenu(index, entries, MENU_TYPE_SUBMENU, "Files", millis() - focusTs);
+    return coord;
+#endif
     tft.drawPixel(0, 0, bruceConfig.bgColor);
     if (index == 0) {
         tft.fillScreen(bruceConfig.bgColor);

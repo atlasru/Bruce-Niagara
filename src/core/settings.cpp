@@ -3,6 +3,7 @@
 #include "core/wifi/wifi_common.h"
 #include "current_year.h"
 #include "display.h"
+#include "niagara_menu.h"
 #if !defined(LITE_VERSION) && !defined(DISABLE_INTERPRETER)
 #include "modules/bjs_interpreter/interpreter.h"
 #endif
@@ -59,10 +60,18 @@ void getBrightness() {
 **********************************************************************/
 int gsetRotation(bool set) {
     int getRot = bruceConfigPins.rotation;
+#ifdef BRUCE_NIAGARA_UI
+    int result = getRot;
+#else
     int result = ROTATION;
     int mask = ROTATION > 1 ? -2 : 2;
+#endif
 
     options = {
+#ifdef BRUCE_NIAGARA_UI
+        {"Wheel below", [&]() { result = NIAGARA_WHEEL_BELOW_ROTATION; }},
+        {"Wheel above", [&]() { result = (NIAGARA_WHEEL_BELOW_ROTATION + 2) % 4; }},
+#else
         {"Default",         [&]() { result = ROTATION; }                        },
         {"Landscape (180)", [&]() { result = ROTATION + mask; }                 },
 #if TFT_WIDTH >= 170 && TFT_HEIGHT >= 240
@@ -70,16 +79,24 @@ int gsetRotation(bool set) {
         {"Portrait (-90)",  [&]() { result = ROTATION == 3 ? 0 : ROTATION + 1; }},
 
 #endif
+#endif
     };
     addOptionToMainMenu();
     if (set) loopOptions(options);
     else result = getRot;
 
     if (result > 3 || result < 0) {
+#ifdef BRUCE_NIAGARA_UI
+        result = NIAGARA_WHEEL_BELOW_ROTATION;
+#else
         result = ROTATION;
+#endif
         set = true;
     }
     if (set) {
+#ifdef BRUCE_NIAGARA_UI
+        saveNiagaraPortraitRotation(result);
+#endif
         bruceConfigPins.setRotation(result);
         tft.setRotation(result);
         tft.setRotation(result); // must repeat, sometimes ESP32S3 miss one SPI command and it just
@@ -361,7 +378,9 @@ void setCustomUIColorSettingMenu(
         uint16_t colorToSet = *static_cast<uint16_t *>(pointer);
         // Serial.printf("Setting bg color to: %04X\n", colorToSet);
         bruceConfig.bgColor = colorToSet;
+#ifndef BRUCE_NIAGARA_UI
         tft.fillScreen(bruceConfig.bgColor);
+#endif
         return false;
     };
 

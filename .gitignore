@@ -21,3 +21,14 @@ lib/mquickjs_headers/mqjs_stdlib_generator.exe
 .github/agents/Bruce-AI.agent.md
 .idea
 .ai
+# Local build environments and device data
+__pycache__/
+*.py[cod]
+.venv/
+.platformio/
+backups/
+downloads/
+compat/
+*.log
+*.bin.part
+brucepins.conf

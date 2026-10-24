@@ -1,6 +1,7 @@
 import hashlib
 from typing import TYPE_CHECKING, Any
 import requests
+import subprocess
 
 if TYPE_CHECKING:
     Import: Any = None
@@ -33,9 +34,12 @@ if not isfile(join(FRAMEWORK_DIR,mcu, "lib", ".patched")):
     elif mcu=="esp32p4":
         """Do nothing"""
     else:
-        env.Execute(
-            "pio pkg exec -p toolchain-xtensa-%s -- xtensa-%s-elf-objcopy  --weaken-symbol=ieee80211_raw_frame_sanity_check %s %s"
-            % (mcu, mcu, original_file, patched_file)
+        # Arduino 3.x uses one Xtensa toolchain for all three Xtensa MCUs.
+        toolchain = env.PioPlatform().get_package_dir("toolchain-xtensa-esp-elf")
+        objcopy = join(toolchain, "bin", "xtensa-esp-elf-objcopy")
+        subprocess.run(
+            [objcopy, "--weaken-symbol=ieee80211_raw_frame_sanity_check", original_file, patched_file],
+            check=True,
         )
 
     if isfile("%s.old" % (original_file)):
@@ -93,6 +97,8 @@ def load_checksum_file(input_file):
 
 
 def minify_css(c):
+    if env.GetProjectOption("custom_offline_assets", "no") == "yes":
+        return c.read()
     minify_req = requests.post(
         "https://www.toptal.com/developers/cssminifier/api/raw",
         {"input": c.read().decode('utf-8')},
@@ -101,6 +107,8 @@ def minify_css(c):
 
 
 def minify_js(js):
+    if env.GetProjectOption("custom_offline_assets", "no") == "yes":
+        return js.read()
     minify_req = requests.post(
         'https://www.toptal.com/developers/javascript-minifier/api/raw',
         {'input': js.read().decode('utf-8')},
@@ -110,6 +118,8 @@ def minify_js(js):
 
 
 def minify_html(html):
+    if env.GetProjectOption("custom_offline_assets", "no") == "yes":
+        return html.read()
     minify_req = requests.post(
         'https://www.toptal.com/developers/html-minifier/api/raw',
         {'input': html.read().decode('utf-8')},

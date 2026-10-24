@@ -1,4 +1,5 @@
 #include "core/main_menu.h"
+#include "core/niagara_menu.h"
 #include <globals.h>
 
 #include "core/powerSave.h"
@@ -211,6 +212,9 @@ void setup_gpio() {
  **  Config tft
  *********************************************************************/
 void begin_tft() {
+#ifdef BRUCE_NIAGARA_UI
+    bruceConfigPins.rotation = niagaraPortraitRotation();
+#endif
     tft.setRotation(bruceConfigPins.rotation); // sometimes it misses the first command
     tft.invertDisplay(bruceConfig.colorInverted);
     tft.setRotation(bruceConfigPins.rotation);

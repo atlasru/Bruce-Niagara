@@ -1,5 +1,6 @@
 #include "sd_functions.h"
 #include "display.h" // using displayRedStripe as error msg
+#include "niagara_menu.h"
 #include "modules/badusb_ble/ducky_typer.h"
 #include "modules/bjs_interpreter/interpreter.h"
 #include "modules/gps/wdgwars.h"
@@ -600,11 +601,22 @@ String loopSD(FS &fs, bool filePicker, String allowed_ext, String rootPath) {
     maxFiles = fileList.size() - 1; // discount the >back operator
     LongPress = false;
     unsigned long LongPressTmp = millis();
+#ifdef BRUCE_NIAGARA_UI
+    unsigned long marqueeTs = 0;
+#endif
     while (1) {
         delay(10);
         // if(returnToMenu) break; // stop this loop and retur to the previous loop
         if (exit) break; // stop this loop and retur to the previous loop
 
+#ifdef BRUCE_NIAGARA_UI
+        if (index >= 0 && index < static_cast<int>(fileList.size()) &&
+            niagaraLabelOverflows((fileList[index].folder ? String("/") : String("")) +
+                                  fileList[index].filename) && millis() - marqueeTs >= 220) {
+            marqueeTs = millis();
+            redraw = true;
+        }
+#endif
         if (redraw) {
             if (strcmp(PreFolder.c_str(), Folder.c_str()) != 0 || reload) {
                 index = 0;
@@ -625,7 +637,9 @@ String loopSD(FS &fs, bool filePicker, String allowed_ext, String rootPath) {
 #endif
             redraw = false;
         }
+#ifndef BRUCE_NIAGARA_UI
         displayScrollingText(fileList[index].filename, coord);
+#endif
 
         // !PrevPress enables EscPress on 3Btn devices to be used in Serial Navigation
         // This condition is important for StickCPlus, Core and other 3 Btn devices

@@ -37,6 +37,8 @@ bool BruceTheme::openThemeFile(FS *fs, String filepath, bool overwriteConfigSett
         removeTheme();
         return false;
     }
+    // A newly loaded theme must not retain assets or flags from the previous one.
+    removeTheme();
     themePath = filepath;
     String baseThemePath = themePath.substring(0, themePath.lastIndexOf('/')) + "/";
 
