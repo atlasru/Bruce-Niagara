@@ -1,0 +1,28 @@
+{
+  "name": "Bruce Niagara",
+  "version": "0.1.0",
+  "tag": "niagara-v0.1.0",
+  "board": "Lilygo T-Embed CC1101",
+  "chipFamily": "ESP32-S3",
+  "flashSize": 16777216,
+  "base": "Bruce 1.15",
+  "releaseUrl": "https://github.com/atlasru/Bruce-Niagara/releases/tag/niagara-v0.1.0",
+  "images": {
+    "app": {
+      "path": "firmware/niagara-v0.1.0/Bruce-Niagara-v0.1.0-TEmbed-CC1101-app.bin",
+      "asset": "Bruce-Niagara-v0.1.0-TEmbed-CC1101-app.bin",
+      "offset": 65536,
+      "size": 4044672,
+      "sha256": "39a0eb958f48cf0890111dff9d623bf147374f7f5effcd79caea2f905689d3ba",
+      "md5": "f23369f1583c1001ef6cea43e0bc3ca2"
+    },
+    "full": {
+      "path": "firmware/niagara-v0.1.0/Bruce-Niagara-v0.1.0-TEmbed-CC1101-full.bin",
+      "asset": "Bruce-Niagara-v0.1.0-TEmbed-CC1101-full.bin",
+      "offset": 0,
+      "size": 4110208,
+      "sha256": "8a5ce87a94b77b41d58f51fc25bc51bcfad5ef20e54edf87d04c887547635303",
+      "md5": "0e114ae1b211e331cae1109cc1fe46f7"
+    }
+  }
+}

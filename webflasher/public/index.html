@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10120f">
+  <meta name="description" content="Install Bruce Niagara on Lilygo T-Embed CC1101 directly from your browser. Portrait UI, original Bruce encoder handling.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>Bruce Niagara — Web Flasher</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#installer" data-i18n="skip">К установщику</a>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Bruce Niagara home"><span class="brand-mark">B<span>/</span>N</span><span>BRUCE <b>NIAGARA</b></span></a>
+      <nav aria-label="Links">
+        <a href="https://github.com/atlasru/Bruce-Niagara" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        <button id="language" class="language" type="button" aria-label="Switch language">EN</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow"><span class="live-dot"></span> PORTRAIT FIRMWARE / WEB FLASHER</p>
+        <h1 id="page-title"><span data-i18n="heroA">Твой T-Embed.</span><br><span class="accent" data-i18n="heroB">Новый ракурс.</span></h1>
+        <p class="lead" data-i18n="lead">Bruce Niagara — вертикальный интерфейс с колесом снизу. Установи прошивку через USB прямо из браузера.</p>
+      </section>
+
+      <section class="workspace" aria-label="Web Flasher">
+        <div class="preview-panel">
+          <div class="preview-meta"><span>LILYGO T-EMBED CC1101</span><span>170 × 320</span></div>
+          <div class="hardware" aria-label="Illustration of a T-Embed with the encoder below its portrait screen">
+            <div class="usb-slot"></div>
+            <div class="hardware-screen"><img src="./preview.png" width="170" height="320" alt="Niagara portrait menu layout illustration"></div>
+            <div class="hardware-label">BRUCE / NIAGARA</div>
+            <div class="encoder"><div></div></div>
+            <div class="case-button"></div>
+          </div>
+          <div class="preview-caption"><span class="tiny-cross" aria-hidden="true">+</span><p data-i18n="previewCaption">Превью интерфейса. Палитра меняется в UI Color / Theme.</p></div>
+        </div>
+
+        <div class="install-panel" id="installer">
+          <div class="install-heading"><div><p class="eyebrow" data-i18n="installerLabel">УСТАНОВЩИК</p><h2 data-i18n="installHeading">На борт.</h2></div><a id="release-link" class="version" href="https://github.com/atlasru/Bruce-Niagara/releases/tag/niagara-v0.1.0" target="_blank" rel="noopener noreferrer">v0.1.0 <span>↗</span></a></div>
+          <p class="target">ESP32-S3 <span>·</span> 16 MB FLASH <span>·</span> BRUCE 1.15</p>
+
+          <fieldset class="mode-switch" id="mode-switch">
+            <legend class="sr-only" data-i18n="modeLegend">Способ установки</legend>
+            <label><input type="radio" name="mode" value="app" checked><span><b data-i18n="modeApp">Обновление</b><small data-i18n="modeAppSub">Приложение</small></span></label>
+            <label><input type="radio" name="mode" value="full"><span><b data-i18n="modeFull">Полный образ</b><small data-i18n="modeFullSub">Новая установка</small></span></label>
+          </fieldset>
+          <div class="mode-description" id="mode-description"></div>
+          <div class="image-meta"><span id="image-size">4.04 MB</span><span data-i18n="integrity">SHA-256 проверяется до записи</span></div>
+
+          <label class="confirm-row"><input type="checkbox" id="confirm"><span id="confirm-text"></span></label>
+
+          <div class="device-state" id="device-state"><span class="state-dot"></span><div><b id="device-label" data-i18n="notConnected">Устройство не подключено</b><small id="device-detail" data-i18n="deviceHint">Подготовь плату и выбери её USB-порт.</small></div></div>
+          <p id="browser-note" class="browser-note" role="status" aria-live="polite"></p>
+          <div id="error" class="error" role="alert" hidden></div>
+          <button id="connect" class="button primary" type="button" disabled><span data-i18n="connect">Подключить устройство</span><span aria-hidden="true">↗</span></button>
+          <button id="install" class="button primary" type="button" hidden disabled><span id="install-label"></span><span aria-hidden="true">→</span></button>
+          <button id="disconnect" class="button quiet" type="button" hidden data-i18n="disconnect">Отключить порт</button>
+
+          <div class="progress-section" id="progress-section" hidden>
+            <div class="progress-label"><span id="stage-label" role="status" aria-live="polite"></span><span id="percentage">0%</span></div>
+            <progress id="progress" max="100" value="0" aria-label="Firmware write progress"></progress>
+            <p id="progress-hint" data-i18n="doNotDisconnect">Не отключай USB до завершения проверки.</p>
+          </div>
+          <div class="success" id="success" role="status" hidden><b data-i18n="successTitle">Готово. Запись проверена.</b><p data-i18n="successBody">Выйди из режима загрузчика и включи устройство обычным способом. Колесо — снизу экрана.</p></div>
+
+          <a id="download" class="download-link" href="https://github.com/atlasru/Bruce-Niagara/releases" target="_blank" rel="noopener noreferrer"><span data-i18n="download">Скачать .bin вручную</span><span aria-hidden="true">↓</span></a>
+          <p class="privacy" data-i18n="privacy">Прошивка идёт локально через USB. Сайт не получает данные устройства.</p>
+        </div>
+      </section>
+
+      <section class="preparation" aria-labelledby="prepare-title">
+        <div class="section-heading"><p class="eyebrow" data-i18n="before">ПЕРЕД ПОДКЛЮЧЕНИЕМ</p><h2 id="prepare-title" data-i18n="prepareHeading">Три коротких шага.</h2></div>
+        <ol class="steps">
+          <li><span class="step-number">01</span><div><h3 data-i18n="step1Title">Подключи USB</h3><p data-i18n="step1Body">Нужен кабель с передачей данных и браузер с Web Serial — например Chrome или Edge на компьютере.</p></div></li>
+          <li><span class="step-number">02</span><div><h3 data-i18n="step2Title">Войди в загрузчик</h3><p data-i18n="step2Body">Зажми кнопку колеса, нажми RST на плате, затем отпусти кнопки.</p></div></li>
+          <li><span class="step-number">03</span><div><h3 data-i18n="step3Title">Выбери порт платы</h3><p data-i18n="step3Body">Закрой другие Serial Monitor и flasher. Выбери USB JTAG/serial или COM-порт T-Embed и дождись проверки.</p></div></li>
+        </ol>
+      </section>
+
+      <section class="notes" aria-label="Details">
+        <details><summary data-i18n="compatTitle">Совместимость и сохранение данных</summary><div><p data-i18n="compatBody">Только Lilygo T-Embed CC1101 с ESP32-S3 и 16 МБ flash. Проверка чипа не определяет точную модель платы — её нужно подтвердить самостоятельно.</p><p data-i18n="dataBody">Обновление принимает только таблицу разделов Bruce 1.15 и пишет приложение с адреса 0x10000. Полный образ пишет также загрузчик, таблицу разделов и NVS, сбрасывая настройки. Сделай резервную копию до прошивки.</p></div></details>
+        <details><summary data-i18n="troubleTitle">Если подключение не получилось</summary><div><p data-i18n="troubleBody">Проверь режим загрузчика, USB-кабель и выбранный порт. Закрой другие программы, использующие COM-порт. При ошибке записи снова войди в загрузчик и повтори установку; успешной считается только запись с совпавшей контрольной суммой.</p><p data-i18n="browserLimit">Физическая прошивка через эту страницу ещё требует проверки на устройстве. При необходимости используй .bin и инструкцию из GitHub Releases.</p></div></details>
+        <details id="log-details"><summary data-i18n="logTitle">Журнал подключения</summary><div><pre id="log" tabindex="0"></pre><button id="save-log" class="text-button" type="button" data-i18n="saveLog">Скачать журнал</button></div></details>
+      </section>
+    </main>
+    <footer><p>BRUCE NIAGARA <span>/</span> COMMUNITY FORK</p><p><a href="https://github.com/BruceDevices/firmware" target="_blank" rel="noopener noreferrer">Bruce upstream ↗</a><a href="https://github.com/espressif/esptool-js" target="_blank" rel="noopener noreferrer">Espressif esptool-js ↗</a><a href="./licenses/" data-i18n="licenses">Лицензии</a></p></footer>
+  </div>
+</body>
+</html>

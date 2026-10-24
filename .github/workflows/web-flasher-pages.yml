@@ -1,0 +1,44 @@
+name: Web Flasher Pages
+on:
+  push:
+    branches: [niagara-ui]
+    paths: ['webflasher/**', 'docs/niagara/home.png', '.github/workflows/web-flasher-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: web-flasher-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.repository == 'atlasru/Bruce-Niagara'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: webflasher/package-lock.json
+      - run: npm ci
+        working-directory: webflasher
+      - run: npm test
+        working-directory: webflasher
+      - run: npm run build
+        working-directory: webflasher
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: webflasher/dist
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/configure-pages@v6
+      - uses: actions/deploy-pages@v5
+        id: deployment

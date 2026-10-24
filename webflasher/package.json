@@ -1,0 +1,1 @@
+{"name":"bruce-niagara-web-flasher","version":"0.1.0","private":true,"type":"module","license":"AGPL-3.0","engines":{"node":">=22"},"scripts":{"test":"node --test","build":"node scripts/build.mjs","serve":"node scripts/serve.mjs"},"dependencies":{"esptool-js":"0.7.0"},"devDependencies":{"esbuild":"0.28.2"}}

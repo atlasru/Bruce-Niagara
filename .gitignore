@@ -32,3 +32,5 @@ compat/
 *.log
 *.bin.part
 brucepins.conf
+webflasher/node_modules/
+webflasher/dist/

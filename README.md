@@ -2,6 +2,8 @@
 
 Niagara-inspired portrait menus for **Lilygo T-Embed CC1101**, based on [Bruce 1.15](https://github.com/BruceDevices/firmware/tree/1.15).
 
+**[Install from your browser — Web Flasher](https://atlasru.github.io/Bruce-Niagara/)** · [Installer source and build instructions](webflasher/README.md)
+
 This community fork keeps Bruce's functionality and adds a compact vertical launcher with the encoder below the screen. The original project is [BruceDevices/firmware](https://github.com/BruceDevices/firmware); upstream authorship and the AGPL-3.0 license are preserved.
 
 <p align="center"><img src="docs/niagara/home.png" width="220" alt="Portrait launcher layout illustration"></p>
